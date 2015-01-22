@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <string name="app_name">SpeechFX Demo</string>
+  <string name="hello_world">Hello world!</string>
+  <string name="action_settings">Settings</string>
+  <string name="recognition_mode">Recognition Mode:</string>
+  <string name="results">Results:</string>
+  <string name="score">Score:</string>
+  <string name="mode">Mode</string>
+  <string name="displayed_results">Results</string>
+  <string name="start">Start</string>
+  <string name="play">Play</string>
+  <string name="help">Help</string>
+  <string name="settings">Settings</string>
+  <string name="fonix_voice_demo">Fonix Voice in Demo</string>
+  <string name="strength_display">Strength display</string>
+  <string name="save">Save</string>
+  <string name="recognition_paramters">Recognition Parameters</string>
+  <string name="noise_threshold">Noise Threshold</string>
+  <string name="max_record_time">Max Record Time (ms)</string>
+  <string name="recognition_words">Recognition Words</string>
+
+</resources>

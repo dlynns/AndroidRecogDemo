@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/back_drop"
+    android:orientation="vertical"
+    >
+  <kankan.wheel.widget.WheelView
+      android:id="@+id/modeSelection"
+      android:layout_width="match_parent"
+      android:layout_height="150dp"
+      android:layout_gravity="center_vertical"
+      android:layout_margin="30dp"
+      android:background="@drawable/back_drop"
+      />
+  <Button
+      android:id="@+id/saveButton"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:onClick="saveSettings"
+      android:text="@string/save"
+      android:background="@drawable/gray_background"
+      />
+</LinearLayout>
