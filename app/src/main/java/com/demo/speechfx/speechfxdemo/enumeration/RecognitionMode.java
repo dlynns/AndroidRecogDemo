@@ -1,12 +1,10 @@
 package com.demo.speechfx.speechfxdemo.enumeration;
 
-import com.demo.speechfx.speechfxdemo.Titled;
-
 /**
  * Created by Marlon on 1/15/2015.
  * RecognitionMode
  */
-public enum RecognitionMode implements Titled {
+public enum RecognitionMode {
   SINGLE("Single"), MULTIPLE("Multiple");
 
   String title;
@@ -24,7 +22,6 @@ public enum RecognitionMode implements Titled {
     return titles;
   }
 
-  @Override
   public String getTitle() {
     return title;
   }
