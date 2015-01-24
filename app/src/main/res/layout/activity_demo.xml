@@ -26,17 +26,17 @@
           android:id="@+id/recognitionModeLabel"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_marginEnd="5dp"
           android:layout_marginRight="5dp"
           android:text="@string/recognition_mode"
-          android:theme="@style/TextWhiteStyle"
+          android:textColor="@android:color/white"
+          android:textSize="22sp"
           />
       <TextView
           android:id="@+id/recognitionModeValue"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:hint="@string/mode"
-          android:theme="@style/TextWhiteStyle"
+          android:textSize="22sp"
           android:textColor="@color/light_green"
           />
     </LinearLayout>
@@ -65,17 +65,17 @@
             android:id="@+id/resultsLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="5dp"
             android:layout_marginRight="5dp"
             android:text="@string/results"
-            android:theme="@style/TextWhiteStyle"
+            android:textColor="@android:color/white"
+            android:textSize="22sp"
             />
         <TextView
             android:id="@+id/resultsValue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:hint="@string/displayed_results"
-            android:theme="@style/TextWhiteStyle"
+            android:textSize="22sp"
             android:textColor="@color/light_green"
             />
       </LinearLayout>
@@ -91,16 +91,16 @@
             android:id="@+id/scoreLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="5dp"
             android:layout_marginRight="5dp"
             android:text="@string/score"
-            android:theme="@style/TextWhiteStyle"
+            android:textColor="@android:color/white"
+            android:textSize="22sp"
             />
         <TextView
             android:id="@+id/scoreValue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:theme="@style/TextWhiteStyle"
+            android:textSize="22sp"
             android:textColor="@color/light_green"
             />
       </LinearLayout>
@@ -113,8 +113,8 @@
       android:layout_height="match_parent"
       android:layout_above="@+id/section_three"
       android:layout_below="@+id/section_one"
-      android:layout_marginEnd="15dp"
-      android:layout_marginStart="15dp"
+      android:layout_marginRight="15dp"
+      android:layout_marginLeft="15dp"
       android:background="@drawable/dark_gray_area"
       android:orientation="horizontal"
       >
@@ -122,10 +122,8 @@
         android:id="@+id/display_area"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginEnd="50dp"
         android:layout_marginLeft="3dp"
         android:layout_marginRight="50dp"
-        android:layout_marginStart="3dp"
         android:background="@drawable/back_drop"
         android:orientation="vertical"
         >
@@ -146,7 +144,6 @@
         <ImageView
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:src="@drawable/add_button"
             />
@@ -154,16 +151,14 @@
     </LinearLayout>
 
 
-
-      <TextView
-          android:id="@+id/topNumber"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:text="60"
-          android:textColor="@color/light_green"
-          android:textSize="20sp"
-          />
-
+    <TextView
+        android:id="@+id/topNumber"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="60"
+        android:textColor="@color/light_green"
+        android:textSize="20sp"
+        />
 
 
   </LinearLayout>
@@ -184,10 +179,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="7dp"
-        android:layout_marginEnd="15dp"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
-        android:layout_marginStart="15dp"
         android:layout_marginTop="15dp"
         android:orientation="horizontal"
         android:weightSum="10"
@@ -203,7 +196,8 @@
             android:paddingLeft="-20dp"
             android:paddingRight="-5dp"
             android:src="@drawable/ic_action_mic_light"
-            android:theme="@style/TextWhiteStyle"
+            android:textColor="@android:color/white"
+            android:textSize="22sp"
             />
         <ImageView
             android:id="@+id/mic_light"
@@ -220,7 +214,8 @@
           android:layout_height="60dp"
           android:background="@drawable/back_drop"
           android:contentDescription="@string/strength_display"
-          android:theme="@style/TextWhiteStyle"
+          android:textColor="@android:color/white"
+          android:textSize="22sp"
           />
     </LinearLayout>
     <View
@@ -244,25 +239,27 @@
             android:id="@+id/startButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="15dp"
-            android:layout_marginStart="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginLeft="15dp"
             android:layout_weight="1"
             android:background="@drawable/small_button_selector"
             android:contentDescription="@string/start"
             android:text="@string/start"
-            android:theme="@style/TextWhiteStyle"
+            android:textColor="@android:color/white"
+            android:textSize="22sp"
             />
         <Button
             android:id="@+id/playButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="15dp"
-            android:layout_marginStart="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginLeft="15dp"
             android:layout_weight="1"
             android:background="@drawable/small_button_selector"
             android:contentDescription="@string/play"
             android:text="@string/play"
-            android:theme="@style/TextWhiteStyle"
+            android:textColor="@android:color/white"
+            android:textSize="22sp"
             />
       </LinearLayout>
     </LinearLayout>
@@ -294,11 +291,11 @@
         android:layout_gravity="bottom"
         android:layout_weight="2"
         android:clickable="true"
-        android:gravity="start|center_vertical"
+        android:gravity="left|center_vertical"
         android:paddingTop="3dp"
         android:text="@string/help"
         android:textSize="16sp"
-        android:theme="@style/TextWhiteStyle"
+        android:textColor="@android:color/white"
         />
     <TextView
         android:id="@+id/fonixVoice"
@@ -309,7 +306,7 @@
         android:gravity="center_horizontal"
         android:text="@string/fonix_voice_demo"
         android:textSize="20sp"
-        android:theme="@style/TextWhiteStyle"
+        android:textColor="@android:color/white"
         />
     <TextView
         android:id="@+id/settingsButton"
@@ -318,11 +315,11 @@
         android:layout_gravity="bottom"
         android:layout_weight="2"
         android:clickable="true"
-        android:gravity="end"
+        android:gravity="right"
         android:paddingTop="3dp"
         android:text="@string/settings"
         android:textSize="16sp"
-        android:theme="@style/TextWhiteStyle"
+        android:textColor="@android:color/white"
         />
     <ImageView
         android:id="@+id/forwardArrow"

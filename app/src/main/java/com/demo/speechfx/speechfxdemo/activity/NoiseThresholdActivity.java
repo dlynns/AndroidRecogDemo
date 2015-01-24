@@ -7,6 +7,8 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,15 +30,18 @@ import kankan.wheel.widget.adapters.ArrayWheelAdapter;
  */
 public class NoiseThresholdActivity extends Activity {
   private boolean scrolling = false;
+  private WheelView thresholdWheel;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    requestWindowFeature(Window.FEATURE_NO_TITLE);
+    getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     setContentView(R.layout.noise_threshold_setting);
 
     int current = SpeechFxApp.getInstance().getNoiseThreshold() - 1;
     final String noiseThresholds[] = getList();
-    final WheelView thresholdWheel = (WheelView) findViewById(R.id.thresholdSelection);
+    thresholdWheel = (WheelView) findViewById(R.id.thresholdSelection);
     thresholdWheel.setCurrentItem(current);
     thresholdWheel.setVisibleItems(15);
     thresholdWheel.setViewAdapter(new TextWheelAdapter(this, noiseThresholds, current));
@@ -71,13 +76,14 @@ public class NoiseThresholdActivity extends Activity {
   }
 
   public void saveSettings(View view) {
+    SpeechFxApp.getInstance().setNoiseThreshold(thresholdWheel.getCurrentItem() * SpeechFxApp.NOISE_THRESHOD_INTERVAL);
     Intent intent = new Intent(this, SettingsActivity.class);
     startActivity(intent);
     finish();
   }
 
   public String[] getList() {
-    List<String> list = new LinkedList<>();
+    List<String> list = new LinkedList<String>();
     for (int i = 0; i <= 10; i++) {
       list.add(String.valueOf(i * SpeechFxApp.NOISE_THRESHOD_INTERVAL));
     }

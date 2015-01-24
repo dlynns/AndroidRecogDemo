@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.demo.speechfx.speechfxdemo.R;
@@ -18,6 +20,8 @@ public class SettingsActivity extends Activity {
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    requestWindowFeature(Window.FEATURE_NO_TITLE);
+    getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     setContentView(R.layout.activity_settings);
     ((TextView) findViewById(R.id.recognitionSetting)).setText(SpeechFxApp.getInstance().getMode().getTitle());
     findViewById(R.id.regocnitionModeEdit).setOnClickListener(new View.OnClickListener() {

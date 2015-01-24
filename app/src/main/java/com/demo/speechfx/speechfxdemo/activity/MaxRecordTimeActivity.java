@@ -7,8 +7,9 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.demo.speechfx.speechfxdemo.R;
 import com.demo.speechfx.speechfxdemo.SpeechFxApp;
@@ -27,27 +28,30 @@ import kankan.wheel.widget.adapters.ArrayWheelAdapter;
  */
 public class MaxRecordTimeActivity extends Activity {
   private boolean scrolling = false;
+  private WheelView maxRecordWheel;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    requestWindowFeature(Window.FEATURE_NO_TITLE);
+    getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     setContentView(R.layout.max_record_time_setting);
 
     int current = SpeechFxApp.getInstance().getMaxRecordTime() - 1;
     final String maxRecordTimes[] = getList();
-    final WheelView thresholdWheel = (WheelView) findViewById(R.id.maxTimeSelection);
-    thresholdWheel.setCurrentItem(current);
-    thresholdWheel.setVisibleItems(15);
-    thresholdWheel.setViewAdapter(new TextWheelAdapter(this, maxRecordTimes, current));
-    thresholdWheel.addChangingListener(new OnWheelChangedListener() {
+    maxRecordWheel = (WheelView) findViewById(R.id.maxTimeSelection);
+    maxRecordWheel.setCurrentItem(current);
+    maxRecordWheel.setVisibleItems(15);
+    maxRecordWheel.setViewAdapter(new TextWheelAdapter(this, maxRecordTimes, current));
+    maxRecordWheel.addChangingListener(new OnWheelChangedListener() {
       @Override
       public void onChanged(WheelView wheel, int oldValue, int newValue) {
         if (!scrolling) {
-          updateMode(thresholdWheel, maxRecordTimes, newValue);
+          updateMode(maxRecordWheel, maxRecordTimes, newValue);
         }
       }
     });
-    thresholdWheel.addScrollingListener(new OnWheelScrollListener() {
+    maxRecordWheel.addScrollingListener(new OnWheelScrollListener() {
       @Override
       public void onScrollingStarted(WheelView wheel) {
         scrolling = true;
@@ -56,7 +60,7 @@ public class MaxRecordTimeActivity extends Activity {
       @Override
       public void onScrollingFinished(WheelView wheel) {
         scrolling = false;
-        updateMode(thresholdWheel, maxRecordTimes, wheel.getCurrentItem());
+        updateMode(maxRecordWheel, maxRecordTimes, wheel.getCurrentItem());
       }
     });
   }
@@ -70,13 +74,14 @@ public class MaxRecordTimeActivity extends Activity {
   }
 
   public void saveSettings(View view) {
+    SpeechFxApp.getInstance().setMaxRecordTime(maxRecordWheel.getCurrentItem() * SpeechFxApp.MAX_RECORD_TIME_INTERVAL);
     Intent intent = new Intent(this, SettingsActivity.class);
     startActivity(intent);
     finish();
   }
 
   public String[] getList() {
-    List<String> list = new LinkedList<>();
+    List<String> list = new LinkedList<String>();
     for (int i = 0; i <= 10; i++) {
       list.add(String.valueOf(i * SpeechFxApp.MAX_RECORD_TIME_INTERVAL));
     }

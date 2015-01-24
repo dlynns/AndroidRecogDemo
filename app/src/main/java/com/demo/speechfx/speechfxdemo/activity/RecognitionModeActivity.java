@@ -7,6 +7,8 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,14 +27,17 @@ import kankan.wheel.widget.adapters.ArrayWheelAdapter;
  */
 public class RecognitionModeActivity extends Activity {
   private boolean scrolling = false;
+  private WheelView modeWheel;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    requestWindowFeature(Window.FEATURE_NO_TITLE);
+    getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     setContentView(R.layout.recognition_mode_settings);
 
     final String modeChoices[] = RecognitionMode.getTitles();
-    final WheelView modeWheel = (WheelView) findViewById(R.id.modeSelection);
+    modeWheel = (WheelView) findViewById(R.id.modeSelection);
     modeWheel.setVisibleItems(15);
 
     int current = SpeechFxApp.getInstance().getMode().ordinal();
@@ -68,6 +73,7 @@ public class RecognitionModeActivity extends Activity {
   }
 
   public void saveSettings(View view) {
+    SpeechFxApp.getInstance().setMode(RecognitionMode.values()[modeWheel.getCurrentItem()]);
     Intent intent = new Intent(this, SettingsActivity.class);
     startActivity(intent);
     finish();

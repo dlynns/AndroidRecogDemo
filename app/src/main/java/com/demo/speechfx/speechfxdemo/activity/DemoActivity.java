@@ -1,12 +1,14 @@
 package com.demo.speechfx.speechfxdemo.activity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -15,7 +17,7 @@ import com.demo.speechfx.speechfxdemo.R;
 import com.demo.speechfx.speechfxdemo.SpeechFxApp;
 import com.demo.speechfx.speechfxdemo.enumeration.MicStatus;
 
-public class DemoActivity extends ActionBarActivity implements View.OnClickListener {
+public class DemoActivity extends Activity implements View.OnClickListener {
   TextView recognitionModeValue;
   TextView scoreValue;
   Button startButton;
@@ -31,6 +33,9 @@ public class DemoActivity extends ActionBarActivity implements View.OnClickListe
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    requestWindowFeature(Window.FEATURE_NO_TITLE);
+    getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
     setContentView(R.layout.activity_demo);
     SpeechFxApp.getInstance().init(getApplicationContext());
 
@@ -60,6 +65,8 @@ public class DemoActivity extends ActionBarActivity implements View.OnClickListe
     recognitionModeValue.setText(SpeechFxApp.getInstance().getMode().getTitle());
     micStatus = SpeechFxApp.getInstance().getMicStatus();
     micLight.setImageResource(micStatus.getResource());
+
+    findViewById(R.id.fonixVoice).setOnClickListener(this);
   }
 
   @Override
@@ -87,6 +94,9 @@ public class DemoActivity extends ActionBarActivity implements View.OnClickListe
   @Override
   public void onClick(View view) {
     switch (view.getId()) {
+      case R.id.fonixVoice:
+        doFonix();
+        break;
       case R.id.startButton:
         start();
         break;
@@ -116,6 +126,11 @@ public class DemoActivity extends ActionBarActivity implements View.OnClickListe
 
   private void help() {
 
+  }
+
+  private void doFonix() {
+    Intent intent = new Intent(this, FonixAsrSimpleExample.class);
+    startActivity(intent);
   }
 
   private void settings() {

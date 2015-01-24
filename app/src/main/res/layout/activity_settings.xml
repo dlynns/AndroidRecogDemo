@@ -11,7 +11,6 @@
       android:layout_height="wrap_content"
       android:layout_gravity="center_horizontal"
       android:layout_marginLeft="10dp"
-      android:layout_marginStart="10dp"
       android:orientation="horizontal"
       >
     <TextView
@@ -29,7 +28,7 @@
         android:layout_height="50dp"
         android:layout_weight="9"
         android:padding="9dp"
-        android:gravity="end"
+        android:gravity="right"
         android:textColor="@android:color/white"
         android:textSize="18sp"
         />
@@ -64,7 +63,6 @@
       android:layout_gravity="center_horizontal"
       android:orientation="horizontal"
       android:layout_marginLeft="10dp"
-      android:layout_marginStart="10dp"
       >
     <TextView
         android:id="@+id/noiseThreshold"
@@ -84,7 +82,7 @@
         android:padding="9dp"
         android:textColor="@android:color/white"
         android:textSize="18sp"
-        android:gravity="end"
+        android:gravity="right"
         />
     <ImageView
         android:id="@+id/noiseThresholdEdit"
@@ -100,7 +98,6 @@
       android:layout_gravity="center_horizontal"
       android:orientation="horizontal"
       android:layout_marginLeft="10dp"
-      android:layout_marginStart="10dp"
       >
     <TextView
         android:id="@+id/maxRecordingTime"
@@ -117,7 +114,7 @@
         android:layout_width="wrap_content"
         android:layout_height="50dp"
         android:layout_weight="5"
-        android:gravity="end"
+        android:gravity="right"
         android:padding="9dp"
         android:textColor="@android:color/white"
         android:textSize="18sp"
