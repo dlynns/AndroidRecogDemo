@@ -20,5 +20,6 @@
   <string name="noise_threshold">Noise Threshold</string>
   <string name="max_record_time">Max Record Time (ms)</string>
   <string name="recognition_words">Recognition Words</string>
+  <string name="stop">Stop</string>
 
 </resources>

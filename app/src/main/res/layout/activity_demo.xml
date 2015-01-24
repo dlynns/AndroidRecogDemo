@@ -235,7 +235,7 @@
           android:layout_height="wrap_content"
           android:orientation="horizontal"
           >
-        <Button
+        <com.demo.speechfx.speechfxdemo.component.RecordButton
             android:id="@+id/startButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -248,7 +248,7 @@
             android:textColor="@android:color/white"
             android:textSize="22sp"
             />
-        <Button
+        <com.demo.speechfx.speechfxdemo.component.PlayButton
             android:id="@+id/playButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
