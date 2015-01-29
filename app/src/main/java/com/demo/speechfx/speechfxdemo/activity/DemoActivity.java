@@ -101,7 +101,7 @@ public class DemoActivity extends Activity implements View.OnClickListener {
   }
 
   private void doFonix() {
-    Intent intent = new Intent(this, AudioRecordTest.class);
+    Intent intent = new Intent(this, AudioRecordActivity.class);
     startActivity(intent);
   }
 
