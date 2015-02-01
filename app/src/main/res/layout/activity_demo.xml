@@ -36,8 +36,8 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:hint="@string/mode"
-          android:textSize="22sp"
           android:textColor="@color/light_green"
+          android:textSize="22sp"
           />
     </LinearLayout>
     <View
@@ -75,8 +75,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:hint="@string/displayed_results"
-            android:textSize="22sp"
             android:textColor="@color/light_green"
+            android:textSize="22sp"
             />
       </LinearLayout>
       <LinearLayout
@@ -100,8 +100,8 @@
             android:id="@+id/scoreValue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="22sp"
             android:textColor="@color/light_green"
+            android:textSize="22sp"
             />
       </LinearLayout>
     </LinearLayout>
@@ -113,8 +113,8 @@
       android:layout_height="match_parent"
       android:layout_above="@+id/section_three"
       android:layout_below="@+id/section_one"
-      android:layout_marginRight="15dp"
       android:layout_marginLeft="15dp"
+      android:layout_marginRight="15dp"
       android:background="@drawable/dark_gray_area"
       android:orientation="horizontal"
       >
@@ -135,19 +135,26 @@
         <TextView
             android:id="@+id/recognitionWordsLabel"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="40dp"
+            android:padding="5dp"
             android:text="@string/recognition_words"
             android:textColor="@color/light_green"
             android:textSize="20sp"
-            android:padding="10dp"
             />
         <ImageView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:id="@+id/addWord"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_alignParentRight="true"
+            android:onClick="onClickAddWord"
             android:src="@drawable/add_button"
             />
       </RelativeLayout>
+      <ListView
+          android:id="@+id/wordList"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          />
     </LinearLayout>
 
 
@@ -239,8 +246,8 @@
             android:id="@+id/startButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="15dp"
             android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
             android:layout_weight="1"
             android:background="@drawable/small_button_selector"
             android:contentDescription="@string/start"
@@ -252,8 +259,8 @@
             android:id="@+id/playButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="15dp"
             android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
             android:layout_weight="1"
             android:background="@drawable/small_button_selector"
             android:contentDescription="@string/play"
@@ -294,8 +301,8 @@
         android:gravity="left|center_vertical"
         android:paddingTop="3dp"
         android:text="@string/help"
-        android:textSize="16sp"
         android:textColor="@android:color/white"
+        android:textSize="16sp"
         />
     <TextView
         android:id="@+id/fonixVoice"
@@ -305,8 +312,8 @@
         android:layout_weight="4"
         android:gravity="center_horizontal"
         android:text="@string/fonix_voice_demo"
-        android:textSize="20sp"
         android:textColor="@android:color/white"
+        android:textSize="20sp"
         />
     <TextView
         android:id="@+id/settingsButton"
@@ -318,8 +325,8 @@
         android:gravity="right"
         android:paddingTop="3dp"
         android:text="@string/settings"
-        android:textSize="16sp"
         android:textColor="@android:color/white"
+        android:textSize="16sp"
         />
     <ImageView
         android:id="@+id/forwardArrow"

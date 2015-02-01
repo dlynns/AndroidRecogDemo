@@ -16,9 +16,14 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+//    sampleRate: 16000
+//    ENCODING_PCM_16BIT
+//    CHANNEL_CONFIGURATION_MONO = 2;
+//    CHANNEL_IN_MONO = 16;
+
 public class AudioRecordActivity extends Activity {
   private static final String TAG = AudioRecordActivity.class.getSimpleName();
-  private static final int RECORDER_SAMPLE_RATE = 8000;
+  private static final int RECORDER_SAMPLE_RATE = 16000;
   private static final int RECORDER_CHANNELS = AudioFormat.CHANNEL_IN_MONO;
   private static final int RECORDER_AUDIO_ENCODING = AudioFormat.ENCODING_PCM_16BIT;
   private static final int BUFFER_ELEMENTS_2_REC = 1024; // want to play 2048 (2K) since 2 bytes we use only 1024

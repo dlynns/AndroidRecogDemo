@@ -1,17 +1,20 @@
 package com.demo.speechfx.speechfxdemo.activity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.media.MediaPlayer;
-import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.demo.speechfx.speechfxdemo.R;
@@ -20,7 +23,9 @@ import com.demo.speechfx.speechfxdemo.component.PlayButton;
 import com.demo.speechfx.speechfxdemo.component.RecordButton;
 import com.demo.speechfx.speechfxdemo.enumeration.MicStatus;
 
-import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class DemoActivity extends Activity implements View.OnClickListener {
   private static final String TAG = DemoActivity.class.getSimpleName();
@@ -29,10 +34,12 @@ public class DemoActivity extends Activity implements View.OnClickListener {
   private RecordButton startButton;
   public PlayButton playButton;
   private ImageView micLight;
+  private ImageView addWord;
   private ImageView backArrow;
   private TextView helpButton;
   private TextView settingsButton;
   private ImageView forwardArrow;
+  private List<String> wordList = new ArrayList<String>();
 
   private MicStatus micStatus = MicStatus.GRAY;
 
@@ -40,6 +47,9 @@ public class DemoActivity extends Activity implements View.OnClickListener {
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
+    wordList.add("one");
+    wordList.add("two");
+    wordList.add("three");
     super.onCreate(savedInstanceState);
     requestWindowFeature(Window.FEATURE_NO_TITLE);
     getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
@@ -53,6 +63,8 @@ public class DemoActivity extends Activity implements View.OnClickListener {
     startButton = (RecordButton) findViewById(R.id.startButton);
     playButton = (PlayButton) findViewById(R.id.playButton);
     micLight = (ImageView) findViewById(R.id.mic_light);
+
+    addWord = (ImageView) findViewById(R.id.addWord);
 
     OpenBrowser openBrowser = new OpenBrowser("http:/www.speechfxinc.com");
     backArrow = (ImageView) findViewById(R.id.backArrow);
@@ -110,6 +122,30 @@ public class DemoActivity extends Activity implements View.OnClickListener {
     startActivity(intent);
   }
 
+  public void onClickAddWord(View view) {
+    final EditText editText = new EditText(this);
+
+    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    builder.setTitle(getString(R.string.add_word) + " " + wordList.size());
+    builder.setMessage(R.string.add_word);
+    builder.setView(editText);
+    builder.setPositiveButton(R.string.add, new DialogInterface.OnClickListener() {
+      public void onClick(DialogInterface dialog, int id) {
+        if (!editText.getText().toString().trim().equals("")) {
+          wordList.add(editText.getText().toString().trim());
+          final WordArrayAdapter adapter = new WordArrayAdapter(DemoActivity.this, R.layout.single_word_layout, wordList);
+          ((ListView) findViewById(R.id.wordList)).setAdapter(adapter);
+        }
+      }
+    });
+    builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+      public void onClick(DialogInterface dialog, int id) {
+        dialog.dismiss();
+      }
+    });
+    builder.create().show();
+  }
+
   class OpenBrowser implements View.OnClickListener {
     private final String url;
 
@@ -120,6 +156,28 @@ public class DemoActivity extends Activity implements View.OnClickListener {
     @Override
     public void onClick(View v) {
       DemoActivity.this.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+    }
+  }
+
+  private class WordArrayAdapter extends ArrayAdapter<String> {
+    HashMap<String, Integer> idMap = new HashMap<String, Integer>();
+
+    public WordArrayAdapter(Context context, int textViewResourceId, List<String> objects) {
+      super(context, textViewResourceId, objects);
+      for (int i = 0; i < objects.size(); ++i) {
+        idMap.put(objects.get(i), i);
+      }
+    }
+
+    @Override
+    public long getItemId(int position) {
+      String item = getItem(position);
+      return idMap.get(item);
+    }
+
+    @Override
+    public boolean hasStableIds() {
+      return true;
     }
   }
 }
