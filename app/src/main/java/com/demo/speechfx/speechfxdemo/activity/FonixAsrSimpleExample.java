@@ -45,6 +45,7 @@ import static com.speechfxinc.voicein.android.FonixCore.runNode;
 import static com.speechfxinc.voicein.android.FonixCore.setAsrDictionaryFile;
 import static com.speechfxinc.voicein.android.FonixCore.setGeneralNNetFile;
 import static com.speechfxinc.voicein.android.FonixCore.setNodeActivePercent;
+import static com.speechfxinc.voicein.android.FonixCore.setNodeRawAudioInput;
 import static com.speechfxinc.voicein.android.FonixCore.setRejectionStrength;
 import static com.speechfxinc.voicein.android.FonixCore.setReplayInput;
 import static com.speechfxinc.voicein.android.FonixCore.setSharedPath;
@@ -58,7 +59,7 @@ public class FonixAsrSimpleExample extends Activity {
   private static final String SHARED_PATH = "";
   private static final String ASR_DICTIONARY = "Colors.pdc";  /* A pared down user dictionary that contains color words. */
   private static final String WAVE_FILE = "green8k.wav"; /* An audio file containing the word "green". */
-  private static final String GENERAL_NNET = "usgp08FN3108.psi"; /* The neural net file. */
+    private static final String GENERAL_NNET = "usgp16FN3108.psi"; /* The neural net file. */
   private static final String GENERAL_NNET_DESCR = GENERAL_NNET.substring(0, GENERAL_NNET.lastIndexOf('.'));
   private TextView textView;
   private Button greenButton;
@@ -148,7 +149,7 @@ public class FonixAsrSimpleExample extends Activity {
         formatter.format("setWaveInput error %d\n", nRet);
         message = formatter.toString();
       }
-
+        nRet = setNodeRawAudioInput(fnxCore, 0, )
       if ((nRet = runNode(fnxCore, wordNodeID, null)) < 0) {  // process the audio input
         formatter.format("runNode error %d\n", nRet);
         message = formatter.toString();
