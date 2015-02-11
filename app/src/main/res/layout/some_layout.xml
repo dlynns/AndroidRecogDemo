@@ -1,20 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     >
-  <Button
-      android:id="@+id/startButton"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:text="Start"
-      />
-  <Button
-      android:id="@+id/playButton"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:text="Stop"
+  <LinearLayout
+      xmlns:android="http://schemas.android.com/apk/res/android"
+      android:layout_width="match_parent"
+      android:layout_height="80dp"
+      android:orientation="horizontal"
+      android:gravity="center_vertical"
+      >
+    <Button
+        android:id="@+id/startButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Start"
+        />
+    <Button
+        android:id="@+id/stopButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Stop"
+        />
+    <Button
+        android:id="@+id/playButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Play"
+        />
+  </LinearLayout>
+  <TextView
+      android:id="@+id/resultingWords"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:gravity="center_horizontal|center_vertical"
+      android:text="none"
+      android:textColor="@color/light_green"
       />
 </LinearLayout>

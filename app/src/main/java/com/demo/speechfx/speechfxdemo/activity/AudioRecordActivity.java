@@ -4,23 +4,28 @@ import android.app.Activity;
 import android.content.res.AssetManager;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
+import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.Toast;
 
 import com.demo.speechfx.speechfxdemo.R;
 import com.speechfxinc.voicein.android.FnxCore;
 import com.speechfxinc.voicein.android.FnxMemFileMapping;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Formatter;
+import java.util.List;
 
 
 import static com.speechfxinc.voicein.android.FonixCore.create;
@@ -56,12 +61,14 @@ public class AudioRecordActivity extends Activity {
   private static final int RECORDER_SAMPLE_RATE = 8000;
   private static final int RECORDER_CHANNELS = AudioFormat.CHANNEL_IN_MONO;
   private static final int RECORDER_AUDIO_ENCODING = AudioFormat.ENCODING_PCM_16BIT;
-  private static final int BUFFER_ELEMENTS_2_REC = 1024 * 20; // want to play 2048 (2K) since 2 bytes we use only 1024
+  private static final int BUFFER_ELEMENTS_2_REC = 1024; // want to play 2048 (2K) since 2 bytes we use only 1024
   private static final int BYTES_PER_ELEMENT = 2; // 2 bytes in 16bit format
+  private MediaPlayer player = null;
   private AudioRecord recorder = null;
   private Thread recordingThread = null;
   private boolean isRecording = false;
-  ArrayList<FnxMemFileMapping> memFileMappings;
+  private ArrayList<FnxMemFileMapping> memFileMappings;
+  private static final String FILE_PATH = "/sdcard/voice8K16bitmono.pcm";
 
   /*
    * On Android, an application doesn't generally have direct access to the filesystem.
@@ -122,7 +129,7 @@ public class AudioRecordActivity extends Activity {
          at least with respect to how the UI gets set up. */
     FnxCore fnxCore = create();
     if (fnxCore != null) {
-      String recognizedWord[] = new String[1];                            // Buffer to contain recognized word
+      String recognizedWord[] = new String[1]; // Buffer to contain recognized word
               /* You must always use FnxCombineMemFileMaps and FnxMemFileRegister
                  when working with FnxMemFileMapping[].  FnxCombineMemFileMaps makes a
                  contiguous array of structs in the JNI layer for the mock filesystem.
@@ -177,16 +184,18 @@ public class AudioRecordActivity extends Activity {
 
   private void setButtonHandlers() {
     findViewById(R.id.startButton).setOnClickListener(btnClick);
+    findViewById(R.id.stopButton).setOnClickListener(btnClick);
     findViewById(R.id.playButton).setOnClickListener(btnClick);
-  }
-
-  private void enableButton(int id, boolean isEnable) {
-    findViewById(id).setEnabled(isEnable);
   }
 
   private void enableButtons(boolean isRecording) {
     enableButton(R.id.startButton, !isRecording);
-    enableButton(R.id.playButton, isRecording);
+    enableButton(R.id.stopButton, isRecording);
+    enableButton(R.id.playButton, !isRecording);
+  }
+
+  private void enableButton(int id, boolean isEnable) {
+    findViewById(id).setEnabled(isEnable);
   }
 
 //  According to the javadocs, all devices are guaranteed to support this format (for recording):
@@ -218,14 +227,50 @@ public class AudioRecordActivity extends Activity {
   }
 
   private void writeAudioDataToFile() {
+    List<short[]> list = new ArrayList<short[]>();
     // Write the output audio in byte
-    short sData[] = new short[BUFFER_ELEMENTS_2_REC];
-    while (isRecording) {
-      // gets the voice output from microphone to byte format
-      int count = recorder.read(sData, 0, BUFFER_ELEMENTS_2_REC);
-      Log.i(TAG, count + " bytes read");
-      Log.i(TAG, "getMessage " + getMessage(sData));
+    int totalCount = 0;
+    FileOutputStream stream = null;
+    try {
+      stream = new FileOutputStream(FILE_PATH);
+      while (isRecording) {
+        short[] sData = new short[BUFFER_ELEMENTS_2_REC];
+        // gets the voice output from microphone to byte format
+        int count = recorder.read(sData, 0, BUFFER_ELEMENTS_2_REC);
+        list.add(sData);
+        Log.i(TAG, count + " bytes read");
+        totalCount += count;
+        try {
+          // writes the data to file from buffer
+          // stores the voice buffer
+          byte bData[] = short2byte(sData);
+          stream.write(bData, 0, BUFFER_ELEMENTS_2_REC * BYTES_PER_ELEMENT);
+        } catch (IOException e) {
+          Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+          Log.e(TAG, e.getMessage(), e);
+        }
+      }
+    } catch (FileNotFoundException e) {
+      Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+      Log.e(TAG, e.getMessage(), e);
     }
+    try {
+      if (stream != null) {
+        stream.close();
+      }
+    } catch (IOException e) {
+      Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+      Log.e(TAG, e.getMessage(), e);
+    }
+
+    short[] theWholeThing = new short[list.size() * BUFFER_ELEMENTS_2_REC];
+    for (int j = 0; j < list.size(); j++) {
+      short[] data = list.get(j);
+      for (int i = 0; i < data.length; i++) {
+        theWholeThing[(j * i) + i] = data[i];
+      }
+    }
+    Log.i(TAG, "getMessage " + getMessage(theWholeThing));
   }
 
   private void stopRecording() {
@@ -238,19 +283,39 @@ public class AudioRecordActivity extends Activity {
     }
   }
 
+  private void playRecording() {
+    player = new MediaPlayer();
+    try {
+      player.setDataSource(FILE_PATH);
+      player.prepare();
+      player.start();
+      player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+        @Override
+        public void onCompletion(MediaPlayer mediaPlayer) {
+          player.release();
+          player = null;
+        }
+      });
+    } catch (IOException e) {
+      Log.e(TAG, "prepare() failed");
+    }
+  }
+
   private View.OnClickListener btnClick = new View.OnClickListener() {
     public void onClick(View v) {
       switch (v.getId()) {
-        case R.id.startButton: {
+        case R.id.startButton:
           enableButtons(true);
           startRecording();
           break;
-        }
-        case R.id.playButton: {
+        case R.id.stopButton:
           enableButtons(false);
           stopRecording();
           break;
-        }
+        case R.id.playButton:
+//          enableButtons(true);
+//          playRecording();
+          break;
       }
     }
   };
