@@ -11,6 +11,7 @@
       android:layout_height="80dp"
       android:orientation="horizontal"
       android:gravity="center_vertical"
+      android:layout_weight="1"
       >
     <Button
         android:id="@+id/startButton"
@@ -34,12 +35,20 @@
         android:text="Play"
         />
   </LinearLayout>
+  <Button
+      android:id="@+id/clearButton"
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_weight="1"
+      android:text="Clear"
+      />
   <TextView
       android:id="@+id/resultingWords"
       android:layout_width="match_parent"
-      android:layout_height="match_parent"
+      android:layout_height="0dp"
       android:gravity="center_horizontal|center_vertical"
       android:text="none"
       android:textColor="@color/light_green"
+      android:layout_weight="1"
       />
 </LinearLayout>

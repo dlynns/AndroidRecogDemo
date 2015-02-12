@@ -3,8 +3,9 @@ package com.demo.speechfx.speechfxdemo.activity;
 import android.app.Activity;
 import android.content.res.AssetManager;
 import android.media.AudioFormat;
+import android.media.AudioManager;
 import android.media.AudioRecord;
-import android.media.MediaPlayer;
+import android.media.AudioTrack;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.util.Log;
@@ -59,16 +60,18 @@ public class AudioRecordActivity extends Activity {
   private static final String GENERAL_NNET_DESCR = GENERAL_NNET.substring(0, GENERAL_NNET.lastIndexOf('.'));
 
   private static final int RECORDER_SAMPLE_RATE = 8000;
-  private static final int RECORDER_CHANNELS = AudioFormat.CHANNEL_IN_MONO;
+  private static final int RECORDER_IN_CHANNELS = AudioFormat.CHANNEL_IN_MONO;
+  private static final int RECORDER_OUT_CHANNELS = AudioFormat.CHANNEL_OUT_MONO;
   private static final int RECORDER_AUDIO_ENCODING = AudioFormat.ENCODING_PCM_16BIT;
   private static final int BUFFER_ELEMENTS_2_REC = 1024; // want to play 2048 (2K) since 2 bytes we use only 1024
   private static final int BYTES_PER_ELEMENT = 2; // 2 bytes in 16bit format
-  private MediaPlayer player = null;
   private AudioRecord recorder = null;
   private Thread recordingThread = null;
   private boolean isRecording = false;
   private ArrayList<FnxMemFileMapping> memFileMappings;
   private static final String FILE_PATH = "/sdcard/voice8K16bitmono.pcm";
+  private AudioTrack audioTrack;
+  private short[] theWholeThing;
 
   /*
    * On Android, an application doesn't generally have direct access to the filesystem.
@@ -120,7 +123,7 @@ public class AudioRecordActivity extends Activity {
     memFileMappings = unpackAssets(getAssets());
     setButtonHandlers();
     enableButtons(false);
-//    int bufferSize = AudioRecord.getMinBufferSize(RECORDER_SAMPLE_RATE, RECORDER_CHANNELS, RECORDER_AUDIO_ENCODING);
+//    int bufferSize = AudioRecord.getMinBufferSize(RECORDER_SAMPLE_RATE, RECORDER_IN_CHANNELS, RECORDER_AUDIO_ENCODING);
   }
 
   private String getMessage(short[] sData) {
@@ -186,6 +189,7 @@ public class AudioRecordActivity extends Activity {
     findViewById(R.id.startButton).setOnClickListener(btnClick);
     findViewById(R.id.stopButton).setOnClickListener(btnClick);
     findViewById(R.id.playButton).setOnClickListener(btnClick);
+    findViewById(R.id.clearButton).setOnClickListener(btnClick);
   }
 
   private void enableButtons(boolean isRecording) {
@@ -198,12 +202,14 @@ public class AudioRecordActivity extends Activity {
     findViewById(id).setEnabled(isEnable);
   }
 
-//  According to the javadocs, all devices are guaranteed to support this format (for recording):
-//  44100, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT.
-//  Change to CHANNEL_OUT_MONO for playback.
-
   private void startRecording() {
-    recorder = new AudioRecord(MediaRecorder.AudioSource.MIC, RECORDER_SAMPLE_RATE, RECORDER_CHANNELS, RECORDER_AUDIO_ENCODING, BUFFER_ELEMENTS_2_REC * BYTES_PER_ELEMENT);
+    recorder = new AudioRecord(
+        MediaRecorder.AudioSource.MIC,
+        RECORDER_SAMPLE_RATE,
+        RECORDER_IN_CHANNELS,
+        RECORDER_AUDIO_ENCODING,
+        BUFFER_ELEMENTS_2_REC * BYTES_PER_ELEMENT
+    );
     recorder.startRecording();
     isRecording = true;
     recordingThread = new Thread(new Runnable() {
@@ -215,13 +221,15 @@ public class AudioRecordActivity extends Activity {
   }
 
   //convert short to byte
-  private byte[] short2byte(short[] sData) {
-    int shortArraySize = sData.length;
-    byte[] bytes = new byte[shortArraySize * 2];
-    for (int i = 0; i < shortArraySize; i++) {
-      bytes[i * 2] = (byte) (sData[i] & 0x00FF);
-      bytes[(i * 2) + 1] = (byte) (sData[i] >> 8);
-      sData[i] = 0;
+  private byte[] short2byte(short[] data) {
+    byte[] bytes = new byte[data.length * 2];
+    for (int i = 0; i < data.length; i++) {
+      bytes[i * 2] = (byte) (data[i] & 0x00FF);
+      bytes[(i * 2) + 1] = (byte) (data[i] >> 8);
+//      Log.d(TAG, data[i]
+//          + " " + Integer.toBinaryString(Math.abs(data[i]))
+//          + " " + Integer.toBinaryString(Math.abs(bytes[i*2]))
+//          + " " + Integer.toBinaryString((Math.abs(bytes[(i*2) + 1]))));
     }
     return bytes;
   }
@@ -250,6 +258,7 @@ public class AudioRecordActivity extends Activity {
           Log.e(TAG, e.getMessage(), e);
         }
       }
+      Log.i(TAG, totalCount + "Total bytes read");
     } catch (FileNotFoundException e) {
       Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
       Log.e(TAG, e.getMessage(), e);
@@ -263,7 +272,7 @@ public class AudioRecordActivity extends Activity {
       Log.e(TAG, e.getMessage(), e);
     }
 
-    short[] theWholeThing = new short[list.size() * BUFFER_ELEMENTS_2_REC];
+    theWholeThing = new short[list.size() * BUFFER_ELEMENTS_2_REC];
     for (int j = 0; j < list.size(); j++) {
       short[] data = list.get(j);
       for (int i = 0; i < data.length; i++) {
@@ -283,22 +292,15 @@ public class AudioRecordActivity extends Activity {
     }
   }
 
-  private void playRecording() {
-    player = new MediaPlayer();
-    try {
-      player.setDataSource(FILE_PATH);
-      player.prepare();
-      player.start();
-      player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-        @Override
-        public void onCompletion(MediaPlayer mediaPlayer) {
-          player.release();
-          player = null;
-        }
-      });
-    } catch (IOException e) {
-      Log.e(TAG, "prepare() failed");
-    }
+  private void playRecording(short[] theWholeThing) {
+    audioTrack = new AudioTrack(AudioManager.STREAM_MUSIC,
+        RECORDER_SAMPLE_RATE,
+        RECORDER_OUT_CHANNELS,
+        RECORDER_AUDIO_ENCODING,
+        theWholeThing.length / BYTES_PER_ELEMENT,
+        AudioTrack.MODE_STREAM);
+    audioTrack.play();
+    audioTrack.write(theWholeThing, 0, theWholeThing.length);
   }
 
   private View.OnClickListener btnClick = new View.OnClickListener() {
@@ -313,8 +315,23 @@ public class AudioRecordActivity extends Activity {
           stopRecording();
           break;
         case R.id.playButton:
-//          enableButtons(true);
-//          playRecording();
+          playRecording(theWholeThing);
+          break;
+        case R.id.clearButton:
+          if (recorder != null) {
+            recorder.release();
+            recorder = null;
+          }
+          if (recordingThread != null) {
+            recordingThread.interrupt();
+            recordingThread.stop();
+            recordingThread = null;
+          }
+          if (audioTrack != null) {
+            audioTrack.flush();
+            audioTrack.release();
+            audioTrack = null;
+          }
           break;
       }
     }
