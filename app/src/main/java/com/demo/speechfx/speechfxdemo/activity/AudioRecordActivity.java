@@ -11,15 +11,12 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.widget.Toast;
 
 import com.demo.speechfx.speechfxdemo.R;
 import com.speechfxinc.voicein.android.FnxCore;
 import com.speechfxinc.voicein.android.FnxMemFileMapping;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -220,64 +217,24 @@ public class AudioRecordActivity extends Activity {
     recordingThread.start();
   }
 
-  //convert short to byte
-  private byte[] short2byte(short[] data) {
-    byte[] bytes = new byte[data.length * 2];
-    for (int i = 0; i < data.length; i++) {
-      bytes[i * 2] = (byte) (data[i] & 0x00FF);
-      bytes[(i * 2) + 1] = (byte) (data[i] >> 8);
-//      Log.d(TAG, data[i]
-//          + " " + Integer.toBinaryString(Math.abs(data[i]))
-//          + " " + Integer.toBinaryString(Math.abs(bytes[i*2]))
-//          + " " + Integer.toBinaryString((Math.abs(bytes[(i*2) + 1]))));
-    }
-    return bytes;
-  }
-
   private void writeAudioDataToFile() {
     List<short[]> list = new ArrayList<short[]>();
     // Write the output audio in byte
     int totalCount = 0;
-    FileOutputStream stream = null;
-    try {
-      stream = new FileOutputStream(FILE_PATH);
-      while (isRecording) {
-        short[] sData = new short[BUFFER_ELEMENTS_2_REC];
-        // gets the voice output from microphone to byte format
-        int count = recorder.read(sData, 0, BUFFER_ELEMENTS_2_REC);
-        list.add(sData);
-        Log.i(TAG, count + " bytes read");
-        totalCount += count;
-        try {
-          // writes the data to file from buffer
-          // stores the voice buffer
-          byte bData[] = short2byte(sData);
-          stream.write(bData, 0, BUFFER_ELEMENTS_2_REC * BYTES_PER_ELEMENT);
-        } catch (IOException e) {
-          Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
-          Log.e(TAG, e.getMessage(), e);
-        }
-      }
-      Log.i(TAG, totalCount + "Total bytes read");
-    } catch (FileNotFoundException e) {
-      Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
-      Log.e(TAG, e.getMessage(), e);
+    while (isRecording) {
+      short[] sData = new short[BUFFER_ELEMENTS_2_REC];
+      // gets the voice output from microphone to byte format
+      int count = recorder.read(sData, 0, BUFFER_ELEMENTS_2_REC);
+      list.add(sData);
+      Log.i(TAG, count + " bytes read");
+      totalCount += count;
     }
-    try {
-      if (stream != null) {
-        stream.close();
-      }
-    } catch (IOException e) {
-      Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
-      Log.e(TAG, e.getMessage(), e);
-    }
+    Log.i(TAG, totalCount + " Total bytes read");
 
     theWholeThing = new short[list.size() * BUFFER_ELEMENTS_2_REC];
     for (int j = 0; j < list.size(); j++) {
       short[] data = list.get(j);
-      for (int i = 0; i < data.length; i++) {
-        theWholeThing[(j * i) + i] = data[i];
-      }
+      System.arraycopy(data, 0, theWholeThing, j * BUFFER_ELEMENTS_2_REC, data.length);
     }
     Log.i(TAG, "getMessage " + getMessage(theWholeThing));
   }
@@ -317,22 +274,6 @@ public class AudioRecordActivity extends Activity {
         case R.id.playButton:
           playRecording(theWholeThing);
           break;
-        case R.id.clearButton:
-          if (recorder != null) {
-            recorder.release();
-            recorder = null;
-          }
-          if (recordingThread != null) {
-            recordingThread.interrupt();
-            recordingThread.stop();
-            recordingThread = null;
-          }
-          if (audioTrack != null) {
-            audioTrack.flush();
-            audioTrack.release();
-            audioTrack = null;
-          }
-          break;
       }
     }
   };
@@ -344,18 +285,17 @@ public class AudioRecordActivity extends Activity {
     }
     return super.onKeyDown(keyCode, event);
   }
-}
 
 //  @Override
 //  public void onResume() {
 //    isRecording = true;
 //  }
 
-//  @Override
-//  public void onPause() {
-//    isRecording = false;
-//  }
-
+  @Override
+  public void onPause() {
+    isRecording = false;
+  }
+}
 
 //  private static int[] mSampleRates = new int[] { 8000, 11025, 22050, 44100 };
 //  public AudioRecord findAudioRecord() {
