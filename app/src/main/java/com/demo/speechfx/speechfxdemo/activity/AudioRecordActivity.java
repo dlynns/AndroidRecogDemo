@@ -129,7 +129,7 @@ public class AudioRecordActivity extends Activity {
          at least with respect to how the UI gets set up. */
     FnxCore fnxCore = create();
     if (fnxCore != null) {
-      String recognizedWord[] = new String[100]; // Buffer to contain recognized word
+      String recognizedWord[] = new String[1]; // Buffer to contain recognized word
               /* You must always use FnxCombineMemFileMaps and FnxMemFileRegister
                  when working with FnxMemFileMapping[].  FnxCombineMemFileMaps makes a
                  contiguous array of structs in the JNI layer for the mock filesystem.
